@@ -113,6 +113,7 @@
 - `sudo pip install django` The Web Application
 - `sudo pip install virtualenv`
 - `sudo pip install git`
+    - You can use git or `scp` to load your project files onto the instance.
 - `sudo service mysqld start`
 - `sudo mysql_secure_installation`
     - No existing pw so just press Enter
