@@ -1,5 +1,5 @@
 # A Wombat's Guide to Simple AWS Hosting For Fun & Profit
-* All text enclosed in the code blocks are bash commands
+* All text enclosed in the `code blocks` are bash commands
 * All certificates/keys you download to communicate with AWS are extremely sensitive. Do not share or expose them to untrusted parties. 
     * Use this tool to search for any high entropy strings (possible keys): https://github.com/dxa4481/truffleHog 
 * Delete anything sensitive with `srm filename` to securely remove it
@@ -91,7 +91,7 @@
 - `find /var/www -type f -exec sudo chmod 0664 {} \;` to add group write permissions
 - Testing Permissions (Optional)
     - `echo "<?php phpinfo(); ?>" > /var/www/html/phpinfo.php`
-    - If http://<the IP>/phpinfo.php shows a PHP info page, good
+    - If http://THEIP/phpinfo.php shows a PHP info page, good
     - `rm /var/www/html/phpinfo.php`
 - Secure the MySQL server
     - `sudo service mysqld start`
@@ -151,7 +151,7 @@
 ### Famous 20-minute Install
 - `wget https://wordpress.org/latest.tar.gz` Get WP
 - `tar -xzf latest.tar.gz` and there should be a 'wordpress' folder if you `ls`
-- `mysql -u root -p` if to access the MySQL terminal
+- `mysql -u root -p` to access the MySQL terminal
     - See commands here to create non-root db. Be aware of single-quotes vs backticks
     - CREATE USER 'mister-wp-user'@'localhost' IDENTIFIED BY 'yourstrongpassword';
     - CREATE DATABASE \`wp-db-name\`;
