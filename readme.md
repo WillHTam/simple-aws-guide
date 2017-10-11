@@ -104,7 +104,7 @@
 - Finished
 
 ## Option 2: DMNG
-### Unleashed with Django / MySQL / NGINX / Gunicorn
+### Unchained with Django / MySQL / NGINX / Gunicorn
 - Connect to your instance with the SSH command you got in the above step
 - `sudo yum update -y`to update all packages
 - `sudo yum install nginx`
