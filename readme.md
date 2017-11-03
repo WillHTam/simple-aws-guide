@@ -186,3 +186,6 @@
 3. Update /etc/httpd/conf.d/ssl.conf
 4. Update .htaccess in /var/www/html to force all requests to HTTPS
 5. Restart httpd with `sudo service httpd restart`
+
+## Finding php.ini
+`php -i | grep -i php.ini`
