@@ -189,3 +189,7 @@
 
 ## Finding php.ini
 `php -i | grep -i php.ini`
+
+## General Troubleshooting
+- If you keep getting time out errors when trying to SSH, check your security group to make sure your IP has permission in Inbound Rules.
+- If your WP install is stuck on the 'Maintenance' page, go to the main WP directory and delete the '.maintenance' file. Check for it with `ls -a`
