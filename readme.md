@@ -1,3 +1,4 @@
+![The Cloudbat](https://github.com/WillHTam/simple-aws-guide/blob/master/cloudbat.jpg?raw=true)
 # A Wombat's Guide to Simple AWS Hosting For Fun & Profit
 * All text enclosed in the `code blocks` are bash commands
 * All certificates/keys you download to communicate with AWS are extremely sensitive. Do not share or expose them to untrusted parties. 
