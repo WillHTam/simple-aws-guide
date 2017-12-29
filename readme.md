@@ -216,7 +216,7 @@
         - `service nginx start / stop / restart / status / reload`
             - You should see ` [ OK ] ` messages if they complete successfully
         - more aggressively `killall -9 nginx`
-        - `nginx -t` will test your configuration, if and where there is an error
+        - `nginx -t` will test your configuration, prints if and where there is an error
         - if you have upgraded nginx through the package manager and want 0 downtime, `service nginx upgrade` 
 - Super fast and easy way: iptables
     - You cheater
