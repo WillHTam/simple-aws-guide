@@ -4,6 +4,9 @@
     * Use this tool to search for any high entropy strings (possible keys): https://github.com/dxa4481/truffleHog 
 * Delete anything sensitive with `srm filename` to securely remove it
 * "30th time's the charm!"
+* You will need a text editor if one is not installed (most likely if you are using Arch (why))
+    * Install nano, vim, vi, or emacs. I prefer vim.
+    * You can easily add syntax highlighting by adding `syntax on` to the `.vimrc` file
 
 ## Preliminary
 - Have an AWS account
@@ -34,6 +37,8 @@
     - Choose SSH but DO NOT use Anywhere
         - Select 'My IP' for Source to automatically populate with your current IP
         - Or use http://checkip.amazonaws.com
+        - Add your team members by getting their IP, and creating another SSH rule for their IP
+            - The format is `theip/32`
 - Outbound can be left alone
 
 ## Launching the Instance
@@ -44,9 +49,14 @@
             - But I've never encountered any problems yet: remember to use your test/staging servers!
         - ec2 management tools are pre-installed
         - pkg manager is `yum`
-    - Ubuntu is production preferred
-        - more packages & more answers for problems
-        - use `apt-get` or `aptitude`
+    - Ubuntu
+        - More packages & more answers for problems, so probably is preferred if you're reading this guide
+        - Use `apt-get` or `aptitude`
+    - Debian
+        - Ubuntu is based on 'Debian testing' and not 'Debian stable', so they will solve vulnerabilities differently and you may have a preference as a result
+        - Ubuntu servers are based on Debian, but Ubuntu's packages will be newer and more feature complete. But Debian is lighter, and the only updates you will receive are security updates. Many find Debian more reliable with less downtime as a result.
+    - Gentoo
+        - you hate yourself
 - Choose size
     - t2.micro is free for first year
 - Select the correct VPC under Network
@@ -92,7 +102,7 @@
 - Testing Permissions (Optional)
     - `echo "<?php phpinfo(); ?>" > /var/www/html/phpinfo.php`
     - If http://THEIP/phpinfo.php shows a PHP info page, good
-    - `rm /var/www/html/phpinfo.php`
+    - `rm /var/www/html/phpinfo.php` because you don't want to expose this info.
 - Secure the MySQL server
     - `sudo service mysqld start`
     - `sudo mysql_secure_installation`
@@ -145,11 +155,82 @@
     - `sudo pip install MySQL-Python`
 - `sudo pip install gunicorn`
 - `gunicorn -b :8000 — env DJANGO_SETTINGS_MODULE=mysite.settings me-project.wsgi &`
-- Finished
+- Finished!
+
+## Option 3: PENU
+### PM2, Express, Nginx, Ubuntu
+- Select the Ubuntu AMI
+    - I prefer Ubuntu for this implementation of Nginx, because it is easier to forward the ports (editing nginx/allowed-sites folder)
+        - Will likely be contained in `/etc/var/nginx/`
+    - If you have more experience with a RHEL/CentOS implementation, then you can stick with Amazon Linux (editing nginx/conf.d)
+- Run apt-get update & upgrade
+- Install NVM onto Ubuntu
+    - `curl https://raw.githubusercontent.com/creationix/nvm/vXXXX/install.sh | bash`
+        - Replace the X's with the latest version number
+    - Run `nvm install node` and `nvm use node`
+        - This will automatically use the latest node, but you can specify a different ver number
+        - You can switch between versions of node with `nvm use`
+    - You may also require build tools `sudo apt-get install -y build-essential libssl-dev`
+- If you were to run `node app.js` on your project now (which can be loaded on with git)...
+    - You would would not be able to access it on the main url even if you told express to serve it on ports 80/443 because those are reserved
+    - You would instead have to go to `theurl.com:8000` to use your routes after setting in your security group a "Custom TCP" inbound rule for port 8000.
+- Nginx will act as a proxy from port 8000 to port 80 (HTTP) or 443 (HTTPS)
+    - This is because Linux restricts apps from binding to the first 1024 ports unless they are given root permissions, to prevent malicious processes from binding to sensitive ports such as 80, 443, 22, 21, etc.
+    - Nginx will recieve root privileges and therefore be able to handle this problem for us
+- First, let us install PM2 to run our node app in the background and automatically on restart
+    - `sudo npm install -g pm2`
+    - run `pm2 start app.js`
+        - Now you can see in PM2's process list that is running much like if you ran 'node app.js'
+    - PM2 applications will get automatically restarted, but now we need PM2 to restart on system startup
+        - `pm2 startup ubuntu`
+            - this will generate a command that you must run with sudo
+- Preferred: Nginx
+    - Nginx is preferred because it will handle caching headers and other transport optimization
+    - `sudo apt-get install nginx`
+    - Move to 'etc/nginx/sites-available/default'
+        - Delete everything. In vim, `gg` to move to the top, 'dG' to delete everything.
+    - Add this configuration:
+        `server {
+            listen 80;
+
+            server_name example.com;
+
+            location / {
+                proxy_pass http://THEIP:XXXX;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+            }
+        }`
+    - Replace THEIP with your EC2 instance's private ip, and the X's with the express port you defined
+        - Save and Exit
+    - ????
+        - Create a symlink `sudo ln -s /etc/nginx/sites-available /etc/nginx/sites enabled`
+    - `sudo service nginx start`
+        - autostart on reboot with `sudo systemctl enable nginx.service`
+        - check with `sudo systemctl status nginx.service`
+    - You should be done, visit the IP
+    - Important Commands
+        - `service nginx start / stop / restart / status / reload`
+            - You should see ` [ OK ] ` messages if they complete successfully
+        - more aggressively `killall -9 nginx`
+        - `nginx -t` will test your configuration, if and where there is an error
+        - if you have upgraded nginx through the package manager and want 0 downtime, `service nginx upgrade` 
+- Super fast and easy way: iptables
+    - You cheater
+    - `sudo iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port XXXX`
+        - Replace the X's with whatever port your express app serves to
+    - iptables forwarding will end whenever your system crashes or ends, which is a preordained eventuality.
+        - To reapply this rule on every system reboot, let us install iptables-persistent
+        - `sudo apt-get install iptables-persistent`
+        - `sudo /etc/init.d/iptables-persistent save`
+    - Done, now serving on Port 80
 
 ## Installing Wordpress
 ### Famous 20-minute Install
-- `wget https://wordpress.org/latest.tar.gz` Get WP
+- `wget https://wordpress.org/latest.tar.gz` Get WP, place where you like but most likely '~'
 - `tar -xzf latest.tar.gz` and there should be a 'wordpress' folder if you `ls`
 - `mysql -u root -p` to access the MySQL terminal
     - See commands here to create non-root db. Be aware of single-quotes vs backticks
