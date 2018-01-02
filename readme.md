@@ -179,7 +179,7 @@
     - This is because Linux restricts apps from binding to the first 1024 ports unless they are given root permissions, to prevent malicious processes from binding to sensitive ports such as 80, 443, 22, 21, etc.
     - Nginx will recieve root privileges and therefore be able to handle this problem for us
 - First, let us install PM2 to run our node app in the background and automatically on restart
-    - `sudo npm install -g pm2`
+    - `npm install -g pm2`
     - run `pm2 start app.js`
         - Now you can see in PM2's process list that is running much like if you ran 'node app.js'
     - PM2 applications will get automatically restarted, but now we need PM2 to restart on system startup
