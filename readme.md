@@ -229,6 +229,32 @@
         - `sudo /etc/init.d/iptables-persistent save`
     - Done, now serving on Port 80
 
+## Redirecting your Site
+- Now that you've got your instance set up, you obviously don't want people to put in an IP Address
+- Get a domain name from namecheap.com / bluehost.com / godaddy.com or wherever you'd like
+    - The terms and processes used here will be the same for any website, but they will be organized in different ways
+- Now that your ec2 instance is set up as you like, copy the instance's IP.
+- Go to Route53, and select 'Hosted Zones'
+- Select 'Create Hosted Zone', and enter your purchased domain name, comments not required, and 'Public Hosted Zone'
+- Copy all the nameserver entries (of which there should be 4) in the NS set for later
+- Now we need to create two A records
+    - Go to 'Create Record Set'
+    - Leave 'name' field blank
+    - Type as "A - IPv4...."
+    - 'Value' as the instance's IP you copied earlier
+    - Then finish with 'Create'
+    - Repeat again, but this time put 'www' in 'name'
+        - This will make 'yourdomain.com' and 'www.yourdomain.com' registered under the nameservers
+- For Namecheap, go to your domain's Manage -> Domain menu, then Nameservers.
+- Change 'NameCheap DNS' to 'CustomDNS', and put each of the nameserver entries you copied from earlier on their own line
+- AWS puts a period on the end of each, remove them
+- Click 'Save All'
+- DNS Propagation should occur with 25 minutes, maximum of 24 hours.
+
+- GitLab Pages, go to Settings -> Pages, and enter your domain name with and without www.
+- Then go to your CPanel, and instead of editing the nameservers, go to DNS settings (under Advanced DNS for nameCheap)
+- Then set A records that point to the GL Pages IP.
+
 ## Installing Wordpress
 ### Famous 20-minute Install
 - `wget https://wordpress.org/latest.tar.gz` Get WP, place where you like but most likely '~'
