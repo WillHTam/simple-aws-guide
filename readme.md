@@ -184,20 +184,19 @@
         - Now you can see in PM2's process list that is running much like if you ran 'node app.js'
     - PM2 applications will get automatically restarted, but now we need PM2 to restart on system startup
         - `pm2 startup ubuntu`
-            - this will generate a command that you must run with sudo
-- Preferred: Nginx
-    - Nginx is preferred because it will handle caching headers and other transport optimization
-    - `sudo apt-get install nginx`
-    - Move to 'etc/nginx/sites-available/default'
-        - Delete everything. In vim, `gg` to move to the top, 'dG' to delete everything.
-    - Add this configuration:
+            - this will generate a command that you must run with `sudo`
+- Let's use Nginx
+    - `sudo apt get update`
+    - `sudo apt get install nginx`
+    - `sudo vim /etc/nginx/sites-available/default/`
+    - Add this
         `server {
             listen 80;
-
-            server_name example.com;
-
+        
+            server_name sitename.com;
+        
             location / {
-                proxy_pass http://THEIP:XXXX;
+                proxy_pass http://127.0.0.1:3000;
                 proxy_http_version 1.1;
                 proxy_set_header Upgrade $http_upgrade;
                 proxy_set_header Connection 'upgrade';
@@ -205,29 +204,8 @@
                 proxy_cache_bypass $http_upgrade;
             }
         }`
-    - Replace THEIP with your EC2 instance's private ip, and the X's with the express port you defined
-        - Save and Exit
-    - ????
-        - Create a symlink `sudo ln -s /etc/nginx/sites-available /etc/nginx/sites enabled`
-    - `sudo service nginx start`
-        - autostart on reboot with `sudo systemctl enable nginx.service`
-        - check with `sudo systemctl status nginx.service`
-    - You should be done, visit the IP
-    - Important Commands
-        - `service nginx start / stop / restart / status / reload`
-            - You should see ` [ OK ] ` messages if they complete successfully
-        - more aggressively `killall -9 nginx`
-        - `nginx -t` will test your configuration, prints if and where there is an error
-        - if you have upgraded nginx through the package manager and want 0 downtime, `service nginx upgrade` 
-- Super fast and easy way: iptables
-    - You cheater
-    - `sudo iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port XXXX`
-        - Replace the X's with whatever port your express app serves to
-    - iptables forwarding will end whenever your system crashes or ends, which is a preordained eventuality.
-        - To reapply this rule on every system reboot, let us install iptables-persistent
-        - `sudo apt-get install iptables-persistent`
-        - `sudo /etc/init.d/iptables-persistent save`
-    - Done, now serving on Port 80
+    - Replace 'sitename' with your domain and 3000 with the port you are serving on if necessary 
+    - `sudo service nginx restart`
 
 ## Redirecting your Site
 - Now that you've got your instance set up, you obviously don't want people to put in an IP Address
