@@ -267,13 +267,16 @@
 - Done
 
 ## Enabling HTTPS with SSL under Apache
-### Just a general summary
+### Buying Your Own Certificates
 - Check http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/SSL-on-an-instance.html for an in-depth guide
 1. Upload certs and key files to EC2
 2. Install mod24_ssl for httpd
 3. Update /etc/httpd/conf.d/ssl.conf
 4. Update .htaccess in /var/www/html to force all requests to HTTPS
 5. Restart httpd with `sudo service httpd restart`
+### Free!
+- https://certbot.eff.org
+- No subdomain support! Need a paid wildcard certificate for login.yoursite.com for example
 
 ## Finding php.ini
 `php -i | grep -i php.ini`
