@@ -190,7 +190,8 @@
     - `sudo apt get install nginx`
     - `sudo vim /etc/nginx/sites-available/default/`
     - Add this
-        `server {
+        ```
+        server {
             listen 80;
         
             server_name sitename.com;
@@ -203,7 +204,8 @@
                 proxy_set_header Host $host;
                 proxy_cache_bypass $http_upgrade;
             }
-        }`
+        }
+        ```
     - Replace 'sitename' with your domain and 3000 with the port you are serving on if necessary 
     - `sudo service nginx restart`
 
