@@ -185,9 +185,8 @@
     - PM2 applications will get automatically restarted, but now we need PM2 to restart on system startup
         - `pm2 startup ubuntu`
             - this will generate a command that you must run with `sudo`
-    - `pm2 status`
-    - `pm2 log <PROCESSNAME> --lines 200`
-    - Remember to pull your repo to update pm2  
+    `pm2 status`
+    `pm2 log <PROCESSNAME> --lines 200`
 - Let's use Nginx
     - `sudo apt get update`
     - `sudo apt get install nginx`
@@ -280,6 +279,14 @@
 ### Free!
 - https://certbot.eff.org
 - No subdomain support! Need a paid wildcard certificate for login.yoursite.com for example
+
+
+## Setting Ubuntu Locale
+- `locale -a`
+- 'sudo locale-gen en_SG.UTF-8`
+- `LANG=en_SG.UTF-8`
+- `update-locale LANG=en_SG.UTF-8`
+- `cat /etc/default/locale`
 
 ## Finding php.ini
 `php -i | grep -i php.ini`
