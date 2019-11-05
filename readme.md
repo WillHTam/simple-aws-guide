@@ -190,7 +190,8 @@
 - Let's use Nginx
     - `sudo apt get update`
     - `sudo apt get install nginx`
-    - `sudo vim /etc/nginx/sites-available/default/`
+    - `sudo vim /etc/nginx/sites-available/default`
+        - 'sites-enabled' is symlinked to this folder
     - Add this
         ```
         server {
@@ -278,8 +279,8 @@
 5. Restart httpd with `sudo service httpd restart`
 ### Free!
 - https://certbot.eff.org
-- No subdomain support! Need a paid wildcard certificate for login.yoursite.com for example
-
+- if need to add more sites (add www and subdomains)
+`certbot certonly extend -d site1.com -d site2.com`
 
 ## Setting Ubuntu Locale
 - `locale -a`
