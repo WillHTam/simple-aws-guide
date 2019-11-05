@@ -281,6 +281,17 @@
 - https://certbot.eff.org
 - if need to add more sites (add www and subdomains)
 `certbot certonly extend -d site1.com -d site2.com`
+- Needed to delete 'return 404' line added by certbot
+- On nginx, need to force to https by changing last bracket to
+```
+server {
+    listen 80;
+    
+    server_name _;
+
+    return 301 https://$host$request_uri;
+}
+```
 
 ## Setting Ubuntu Locale
 - `locale -a`
