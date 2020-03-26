@@ -184,6 +184,7 @@
         - Now you can see in PM2's process list that is running much like if you ran 'node app.js'
     - PM2 applications will get automatically restarted, but now we need PM2 to restart on system startup
         - `pm2 startup ubuntu`
+            - possibly `pm2 startup systemd`, check with `pm2 startup`
             - this will generate a command that you must run with `sudo`
     - check processes with `pm2 status`
     - see your console logs and outputs with `pm2 log <PROCESSNAME> --lines 200`
@@ -209,8 +210,10 @@
             }
         }
         ```
-    - Replace 'sitename' with your domain and 3000 with the port you are serving on if necessary 
-    - `sudo service nginx restart`
+    - Replace 'sitename' with your domain and 3000 with the port you are serving on if necessary
+    - `nginx -t` to check if the new edit is free of errors 
+    - `sudo systemctl restart nginx`
+  
 
 ## Redirecting your Site
 - Now that you've got your instance set up, you obviously don't want people to put in an IP Address
