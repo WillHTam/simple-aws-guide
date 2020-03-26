@@ -211,7 +211,7 @@
         }
         ```
     - Replace 'sitename' with your domain and 3000 with the port you are serving on if necessary
-    - `nginx -t` to check if the new edit is free of errors 
+    - `sudo nginx -t` to check if the new edit is free of errors 
     - `sudo systemctl restart nginx`
   
 
