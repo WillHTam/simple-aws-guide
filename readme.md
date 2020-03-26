@@ -272,14 +272,30 @@
 - `sudo service httpd restart`
 - Done
 
-## Enabling HTTPS with SSL under Apache
-### Buying Your Own Certificates
-- Check http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/SSL-on-an-instance.html for an in-depth guide
-1. Upload certs and key files to EC2
-2. Install mod24_ssl for httpd
-3. Update /etc/httpd/conf.d/ssl.conf
-4. Update .htaccess in /var/www/html to force all requests to HTTPS
-5. Restart httpd with `sudo service httpd restart`
+## Enabling HTTPS with SSL
+### Bought Your Certificates
+- upload to the server with scp
+```
+scp -i "keypair" -r /path/to/stuff ec2servername:/path/to/target/dir
+```
+- copy to an appropriate location
+```
+mkdir /etc/nginx/ssl
+cp server.crt /etc/nginx/ssl
+cp server.key /etc/nginx/ssl
+```
+- edit default file in sites-available
+- delete the listen 80 lines
+- uncomment the listen 443 lines
+- add this below the listen 443 lines
+```
+ssl on;
+ssl_certificate /etc/ssl/your_domain_name.pem; 
+ssl_certificate_key /etc/ssl/your_domain_name.key;
+```
+- don't forget the force to https line below, added beneath the ssl block
+- `sudo systemctl restart nginx`
+
 ### Free!
 - https://certbot.eff.org
 - if need to add more sites (add www and subdomains)
