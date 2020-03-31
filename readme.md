@@ -290,8 +290,8 @@ cp server.key /etc/nginx/ssl
 - add this below the listen 443 lines
 ```
 ssl on;
-ssl_certificate /etc/ssl/your_domain_name.pem; 
-ssl_certificate_key /etc/ssl/your_domain_name.key;
+ssl_certificate /etc/nginx/ssl/your_domain_name.pem; 
+ssl_certificate_key /etc/nginx/ssl/your_domain_name.key;
 ```
 - don't forget the force to https line below, added beneath the ssl block
 - `sudo systemctl restart nginx`
