@@ -280,9 +280,9 @@ scp -i "keypair" -r /path/to/stuff ec2servername:/path/to/target/dir
 ```
 - copy to an appropriate location
 ```
-mkdir /etc/nginx/ssl
-cp server.crt /etc/nginx/ssl
-cp server.key /etc/nginx/ssl
+sudo mkdir /etc/nginx/ssl
+sudo cp server.crt /etc/nginx/ssl
+sudo cp server.key /etc/nginx/ssl
 ```
 - edit default file in sites-available
 - delete the listen 80 lines
