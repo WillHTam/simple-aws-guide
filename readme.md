@@ -115,7 +115,7 @@
 - Finished
 
 ## Option 2: DMNG
-### Unchained with Django / MySQL / NGINX / Gunicorn
+### Django / MySQL / NGINX / Gunicorn
 - Connect to your instance with the SSH command you got in the above step
 - `sudo yum update -y`to update all packages
 - `sudo yum install nginx`
@@ -213,6 +213,53 @@
     - Replace 'sitename' with your domain and 3000 with the port you are serving on if necessary
     - `sudo nginx -t` to check if the new edit is free of errors 
     - `sudo systemctl restart nginx`
+
+## Option 4: AWS S3
+### A good option for a static website
+- If your app is a simple static site, then a site hosted on AWS S3 should be considered
+  - Low upkeep cost
+  - Fairly easy to set up, but does require tangling with the many AWS dashboards
+- Compile your React/whatever app
+  - ensure that the entry point to the app is through index.html
+- Create 2 S3 buckets
+  - They *must* be named according to your site: one of `site.com` and `www.site.com`. Likewise if you are establishing subdomains: `www/subdomain.site.com`
+  - On creation, ensure that the access permissions are open and public
+- Upload to S3
+  - I find it's easier to use the command line to upload from your build folder
+  - `aws s3 cp /localpath/ s3://<bucket name> —-recursive`
+- In Properties -> Static Site Hosting for the bucket without `www`, select the 'Use this bucket for hosting option', and set index.html for the index document
+  - I have frequently encountered 404 Missing Key errors from AWS, which were remedied by simply making index.html the file to be accessed for the 'Error dcoument'
+- For the bucket with `www`, under the same menu set to 'Redirect requests' with http for the second field. Later I will discuss how to use https.
+- Under Permissions -> Bucket Policy, we will give both buckets the standard open website policy
+```
+{
+    "Version": "2008-10-17",
+    "Id": "PolicyForPublicWebsiteContent",
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "*"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::<sitename.com>/*"
+        }
+    ]
+}
+```
+- Note: ensure that the three colons prior to the sitename and after s3 persist in the value for the "Resource" key.
+- If you are hosting a website without SSL, you can end here.  Get the endpoint from the Properties->Static Site Hosting menu and ensure that the site works by going to the address.
+  - If it works, you can proceed to make a CNAME record to the www site with your DNS' cPanel.
+### Enabling HTTPS
+- The following is for certificates bought on other sites
+  - Consider using EFF's Certbot which is both free and very easy to use, but I'm not sure if they can be registered with AWS
+- Go to AWS Certificate Manager, and select Import Certificate. Button located at the top of the page.
+  - Copy the required information into the fields
+  - For certificates from ssl.com, there is a option to download Amazon certificates, which is the one you want
+- Go to Cloudfront, and make a new distribution
+  - Set the Origin as the S3 bucket, set 'Redirect HTTP to HTTPS', and select the certificate you imported.
+- Change the CNAME record to point at the CloudFront url, shown when you click the corresponding site on the CloudFront dashboard
   
 
 ## Redirecting your Site
@@ -249,14 +296,14 @@
     - See commands here to create non-root db. Be aware of single-quotes vs backticks
     - CREATE USER 'mister-wp-user'@'localhost' IDENTIFIED BY 'yourstrongpassword';
     - CREATE DATABASE \`wp-db-name\`;
-    - GRANT ALL PRIVILEGES ON \`db-wp-name\`.* TO "mister-wp-user"@"localhost";
+    - GRANT ALL PRIVILEGES ON \`wp-db-name\`.* TO "mister-wp-user"@"localhost";
     - FLUSH PRIVILEGES;
     - exit => bye
 - `cd wordpress/`
 - `cp wp-config-sample.php wp-config.php`
 - `vim wp-config.php`
     - define('DB_NAME', 'wp-db-name');
-    - define('DB_USER', 'wordpress-user');
+    - define('DB_USER', 'mister-wp-user');
     - define('DB_PASSWORD', 'yourstrongpassword');
 - Under 'Authentication Unique Keys and Salts'
     - Replace the blank values with https://api.wordpress.org/secret-key/1.1/salt/
