@@ -3,6 +3,7 @@
 * All text enclosed in the `code blocks` are bash commands
 * All certificates/keys you download to communicate with AWS are extremely sensitive. Do not share or expose them to untrusted parties. 
     * Use this tool to search for any high entropy strings (possible keys): https://github.com/dxa4481/truffleHog 
+    * also https://github.com/awslabs/git-secrets
 * Delete anything sensitive with `srm filename` to securely remove it
 * "30th time's the charm!"
 * You will need a text editor if one is not installed (most likely if you are using Arch (why))
