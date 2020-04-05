@@ -1,11 +1,10 @@
 ![The Cloudbat](https://github.com/WillHTam/simple-aws-guide/blob/master/cloudbat.jpg?raw=true)
 # A Wombat's Guide to Simple AWS Hosting For Fun & Profit
-* All text enclosed in the `code blocks` are bash commands
+* All text in the `code blocks` can be copied as-is, but look for lines you may need to edit to your own details
 * All certificates/keys you download to communicate with AWS are extremely sensitive. Do not share or expose them to untrusted parties. 
     * Use this tool to search for any high entropy strings (possible keys): https://github.com/dxa4481/truffleHog 
     * also https://github.com/awslabs/git-secrets
-* Delete anything sensitive with `srm filename` to securely remove it
-* "30th time's the charm!"
+* "30th time's the charm!" - don't be afraid to start over and redo if you mess up
 * You will need a text editor if one is not installed (most likely if you are using Arch (why))
     * Install nano, vim, vi, or emacs. I prefer vim.
     * You can easily add syntax highlighting by adding `syntax on` to the `.vimrc` file
