@@ -326,6 +326,8 @@
 scp -i "keypair" -r /path/to/stuff ec2servername:/path/to/target/dir
 ```
 - copy to an appropriate location
+
+### NGINX
 ```
 sudo mkdir /etc/nginx/ssl
 sudo cp server.crt /etc/nginx/ssl
@@ -342,6 +344,27 @@ ssl_certificate_key /etc/nginx/ssl/your_domain_name.key;
 ```
 - don't forget the force to https line below, added beneath the ssl block
 - `sudo systemctl restart nginx`
+
+### APACHE
+- edit httpd.conf, likely in `/etc/apache2/httpd` or `/etc/httpd/httpd. conf`
+```
+# not consecutive lines
+SSLCertificateFile /pathto/certificate.crt
+SSLCertificateKeyFile /pathto/keyfile.key
+```
+or
+```
+<VirtualHost 192.168.0.1:443>
+    DocumentRoot /var/www/html2
+    ServerName www.yourdomain.com
+        SSLEngine on
+        SSLCertificateFile /path/to/your_domain_name.crt
+        SSLCertificateKeyFile /path/to/your_private.key
+        SSLCertificateChainFile /path/to/cabundle.crt
+    </VirtualHost>
+```
+- test configuration with `apachectl configtest`
+- restart apache `sudo service httpd restart`
 
 ### Free!
 - https://certbot.eff.org
