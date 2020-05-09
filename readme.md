@@ -346,7 +346,7 @@ ssl_certificate_key /etc/nginx/ssl/your_domain_name.key;
 - `sudo systemctl restart nginx`
 
 ### APACHE
-- edit httpd.conf, likely in `/etc/apache2/httpd` or `/etc/httpd/httpd. conf`
+- edit httpd.conf, likely in `/etc/apache2/httpd` or `/etc/httpd/httpd.conf` or `/etc/httpd/conf.d/ssl.conf`
 ```
 # not consecutive lines
 SSLCertificateFile /pathto/certificate.crt
