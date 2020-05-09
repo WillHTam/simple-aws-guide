@@ -18,6 +18,10 @@
 - Move it to your '~/.ssh' folder & keep it safe
 - Make it read-only and only for you with:
     - `chmod 400 your_user_name-key-pair-region_name.pem`
+- Service or Systemctl?
+   - `ps --no-headers -o comm 1`
+   - if *systemd* use `systemctl`
+   - if *init* use `service`
 
 ## Make a VPC
 ### Enables loading of AWS Resources onto a virtual network
