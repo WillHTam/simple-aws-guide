@@ -36,7 +36,7 @@
     - `ps aux | grep <process name>` or `top`
 - Find File
     - `find <dir> -name <filename.ext>`
-    - Can search the whole drive if replacing <dir> with '/' but will be slow
+    - Can search the whole drive if replacing `<dir>` with '/' but will be slow
 - Find by Text
     - `grep -rnw 'path' -e 'pattern'`
 - Only include .py & .js files, exclude .o files, exclude dir1 directory
@@ -44,10 +44,10 @@
 - Zip a directory
     - `zip -r archivename.zip directory`
     - password protect with `e` flag
-- Transfer a file from the remote computer to your computer
+- Transfer a directory from the remote computer to your computer
     - `scp -i "key.pem" -r remoteip:path ~/Downloads`
 - Transfer a file from your local computer to a remote computer
-    - `scp -i "key.pem" ~/Downloads:file remoteip:path`
+    - `scp -i "key.pem" ~/Downloads:path/file remoteip:path`
 
 ## Make a VPC
 ### Enables loading of AWS Resources onto a virtual network
