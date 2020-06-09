@@ -48,6 +48,8 @@
     - `scp -i "key.pem" -r remoteip:path ~/Downloads`
 - Transfer a file from your local computer to a remote computer
     - `scp -i "key.pem" ~/Downloads:path/file remoteip:path`
+- Find the difference between two files
+    - `diff -qr dir1 dir2`
 
 ## Make a VPC
 ### Enables loading of AWS Resources onto a virtual network
