@@ -463,7 +463,7 @@ server {
     SSLCertificateFile /usr/local/ssl/cert.crt
     SSLCertificateKeyFile /usr/local/ssl/keyfile.key
     SSLCertificateChainFile /usr/local/ssl/ca-bundle-client.crt
-    DocumentRoot /var/www/appointments-theclinicgroup.jebhealth
+    DocumentRoot /var/www/msysite/
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
 
