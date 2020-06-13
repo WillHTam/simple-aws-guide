@@ -290,7 +290,34 @@
 - Go to Cloudfront, and make a new distribution
   - Set the Origin as the S3 bucket, set 'Redirect HTTP to HTTPS', and select the certificate you imported.
 - Change the CNAME record to point at the CloudFront url, shown when you click the corresponding site on the CloudFront dashboard
-  
+
+## LAMP on Ubuntu
+- `sudo apt update`
+- `sudo apt install apache2`
+- `sudo ufw app info "Apache Full"`
+- `sudo ufw allow in "Apache Full"`
+- Confirm at IP that apache placeholder screen shows
+- `sudo apt install mysql-server`
+- `sudo sudo mysql_secure_installation`
+  - safe to say no for VALIDATE PASSWORD PLUGIN
+  - if you say yes and select 2 for the strongest level, you will receive errors when attempting to set any password which does not contain numbers, upper and lowercase letters, and special characters, or which is based on common dictionary words.
+  - y for the rest
+- Set root to use a password
+  - `sudo mysql`
+  - `SELECT user,authentication_string,plugin,host FROM mysql.user;`
+    - root should say `auth_socket` for plugin
+  - `ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';`
+  - `FLUSH PRIVILEGES;`
+  - `SELECT user,authentication_string,plugin,host FROM mysql.user;`
+    - root should now login by mysqlnativepassword
+  - `exit`
+- `sudo apt install php libapache2-mod-php php-mysql`
+- If wordpress
+  - `sudo vim /etc/apache2/mods-enabled/dir.conf`
+  - change `DirectoryIndex index.html index.cgi index.pl index.php index.xhtml index.htm`
+  - to `DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm`
+- `sudo systemctl restart apache2`
+- `sudo systemctl status apache2`
 
 ## Redirecting your Site
 - Now that you've got your instance set up, you obviously don't want people to put in an IP Address
@@ -411,6 +438,36 @@ server {
     return 301 https://$host$request_uri;
 }
 ```
+
+## Setting up Virtual Hosts
+- To serve more than one domain from a single server
+- Ubuntu has one server block enabled by default that serves from `/var/www/html`
+  - configure a directory structure for `/var/www/your_domain`, and `/var/www/html` will be the default directory to be served if a client request doesn't match any other sites
+- `sudo mkdir /var/www/your_domain`
+- assign ownership of the directory
+  - `sudo chwon -R $USER:$USER /var/www/your_domain`
+- `sudo chmod -R 755 /var/www/your_domain`
+- `vim /var/www/your_domain/index.html`
+  - create some test html
+- let apache know to serve this content by creating a virtual host file with the correct directives
+  - instead of modifying the default config file at `/etc/apache2/sites-available/000-default.conf`
+  - make a new `sudo vim /etc/apache2/sites-available/your_domain.conf`
+```
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    ServerName your_domain
+    ServerAlias www.your_domain
+    DocumentRoot /var/www/your_domain
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+- enable the file with `sudo a2ensite your_domain.conf`
+- disable the default with `sudo a2dissite 000-default.conf`
+- test for errors with `sudo apache2ctl configtest`
+  - should output "Syntax OK"
+- `sudo systemctl restart apache2`
+
 
 ## Setting Ubuntu Locale
 - `locale -a`
