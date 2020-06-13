@@ -364,8 +364,9 @@
     - define('DB_NAME', 'wp-db-name');
     - define('DB_USER', 'mister-wp-user');
     - define('DB_PASSWORD', 'yourstrongpassword');
+    - add `define('FS_METHOD', 'direct');`
 - Under 'Authentication Unique Keys and Salts'
-    - Replace the blank values with https://api.wordpress.org/secret-key/1.1/salt/
+    - `curl -s https://api.wordpress.org/secret-key/1.1/salt/`
 - `cp -r wordpress/* /var/www/html/`
 - Allow WP to use Permalinks
     - `sudo vim /etc/httpd/conf/httpd.conf`
@@ -406,22 +407,13 @@ ssl_certificate_key /etc/nginx/ssl/your_domain_name.key;
 
 ### APACHE
 - edit httpd.conf, likely in `/etc/apache2/httpd` or `/etc/httpd/httpd.conf` or `/etc/httpd/conf.d/ssl.conf`
+- or `/etc/apache2/sites-available/
 ```
 # not consecutive lines
 SSLCertificateFile /pathto/certificate.crt
 SSLCertificateKeyFile /pathto/keyfile.key
 ```
-or
-```
-<VirtualHost 192.168.0.1:443>
-    DocumentRoot /var/www/html2
-    ServerName www.yourdomain.com
-        SSLEngine on
-        SSLCertificateFile /path/to/your_domain_name.crt
-        SSLCertificateKeyFile /path/to/your_private.key
-        SSLCertificateChainFile /path/to/cabundle.crt
-    </VirtualHost>
-```
+or see below in Virtual Hosts
 - test configuration with `apachectl configtest`
 - restart apache `sudo service httpd restart`
 
@@ -457,13 +449,30 @@ server {
 ```
 <VirtualHost *:80>
     ServerAdmin webmaster@localhost
-    ServerName your_domain
-    ServerAlias www.your_domain
-    DocumentRoot /var/www/your_domain
+    ServerName mysite
+    ServerAlias mysite
+
+    Redirect permanent / https://mysite.com/
+</VirtualHost>
+
+<VirtualHost _default_:443>
+    ServerAdmin webmaster@localhost
+    ServerName mysite
+    ServerAlias mysite
+    SSLEngine on
+    SSLCertificateFile /usr/local/ssl/cert.crt
+    SSLCertificateKeyFile /usr/local/ssl/keyfile.key
+    SSLCertificateChainFile /usr/local/ssl/ca-bundle-client.crt
+    DocumentRoot /var/www/appointments-theclinicgroup.jebhealth
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    <Directory /var/www/mysite/>
+        AllowOverride All
+    </Directory>
 </VirtualHost>
 ```
+- enable apache ssl mod `sudo a2enmod ssl`
 - enable the file with `sudo a2ensite your_domain.conf`
 - disable the default with `sudo a2dissite 000-default.conf`
 - test for errors with `sudo apache2ctl configtest`
